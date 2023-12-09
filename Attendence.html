@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Attendance</title>
+    <style>
+      /* Reset some default styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* Apply styles to the body */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .copy-button {
+        margin-bottom: 20px;
+        background-color: #4caf50;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin-top: 10px;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+
+      /* Style the main container */
+      .main {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 0.5s ease-in-out;
+      }
+
+      /* Style the heading */
+      .student {
+        color: #333;
+      }
+
+      /* Style the input field */
+      .input input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-top: 10px;
+      }
+
+      /* Style the Absent Students List heading */
+      .abst h2 {
+        color: #333;
+        margin-top: 20px;
+      }
+
+      /* Keyframe animation for fading in */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      #courseSelect {
+        border: solid black 2px;
+      }
+
+      .selecth2 {
+        margin-top: 15px;
+      }
+
+      .rollno {
+        margin-top: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <div class="sta">
+        <h1 class="student">Student Attendance</h1>
+      </div>
+      <!-- <div class="select">
+            <h2 class="selecth2">select Stander</h2>
+            <select id="courseSelect" onchange="changeCourse()">
+                <option value="BSc IT">BSc IT</option>
+                <option value="BCA">BCA</option>
+            </select>
+        </div> -->
+      <div class="rollno">
+        <h3>Enter Roll Number</h3>
+      </div>
+      <div class="input">
+        <input type="text" id="rollNumber" onkeyup="handleKeyPress(event)" />
+      </div>
+      <div class="abst">
+        <h2>Absent Students List :</h2>
+        <button class="copy-button" onclick="copyAbsentStudents()">Copy</button>
+      </div>
+      <ul id="absentList"></ul>
+    </div>
+
+    <script>
+      const bscItStudents = [
+        // { rollNumber: "0", name: "Todays Absent List", absent: false },
+        { rollNumber: "1", name: "Piyush", absent: false },
+        { rollNumber: "2", name: "Munaf", absent: false },
+        { rollNumber: "3", name: "Mahammadsejan", absent: false },
+        { rollNumber: "4", name: "Krisha", absent: false },
+        { rollNumber: "5", name: "Mohammad Ishahakbhai", absent: false },
+        { rollNumber: "6", name: "Yashkumar Chandrethiya", absent: false },
+        { rollNumber: "7", name: "Diaynshu", absent: false },
+        { rollNumber: "8", name: "Abbasali", absent: false },
+        { rollNumber: "9", name: "Saumya", absent: false },
+        { rollNumber: "10", name: "Nihalkumar", absent: false },
+        { rollNumber: "11", name: "Dhruvkumar Chauhan", absent: false },
+        { rollNumber: "12", name: "Mohammad Ali", absent: false },
+        { rollNumber: "13", name: "Viral", absent: false },
+        { rollNumber: "14", name: "Rudrakumar", absent: false },
+        { rollNumber: "15", name: "Afnan", absent: false },
+        { rollNumber: "16", name: "Rinalben", absent: false },
+        { rollNumber: "17", name: "Aman", absent: false },
+        { rollNumber: "18", name: "Muhammad", absent: false },
+        { rollNumber: "19", name: "Hafij", absent: false },
+        { rollNumber: "20", name: "Nofal", absent: false },
+        { rollNumber: "21", name: "Taushifbhai", absent: false },
+        { rollNumber: "22", name: "Harshna", absent: false },
+        { rollNumber: "23", name: "Kartikgiri", absent: false },
+        { rollNumber: "24", name: "Nisargsinh", absent: false },
+        { rollNumber: "25", name: "Nidhiben", absent: false },
+        { rollNumber: "26", name: "Itiben", absent: false },
+        { rollNumber: "27", name: "Gautamkumar", absent: false },
+        { rollNumber: "28", name: "Mohammad Jissan", absent: false },
+        { rollNumber: "29", name: "Mahammed Kamil", absent: false },
+        { rollNumber: "30", name: "Siddharajsinh", absent: false },
+        { rollNumber: "31", name: "Gayatri", absent: false },
+        { rollNumber: "32", name: "Swati", absent: false },
+        { rollNumber: "33", name: "Aarzoo", absent: false },
+        { rollNumber: "34", name: "Mahirkhan", absent: false },
+        { rollNumber: "35", name: "Salman", absent: false },
+        { rollNumber: "36", name: "Sajid", absent: false },
+        { rollNumber: "37", name: "Mohammad", absent: false },
+        { rollNumber: "38", name: "Sajidabbas", absent: false },
+        { rollNumber: "39", name: "Pratik", absent: false },
+        { rollNumber: "40", name: "Jeelkumar", absent: false },
+        { rollNumber: "41", name: "Hasan", absent: false },
+        { rollNumber: "42", name: "Mujtaba", absent: false },
+        { rollNumber: "43", name: "Manish", absent: false },
+        { rollNumber: "44", name: "Trusha", absent: false },
+        { rollNumber: "45", name: "Jaiminkumar", absent: false },
+        { rollNumber: "46", name: "Dhir", absent: false },
+        { rollNumber: "47", name: "Mihir", absent: false },
+        { rollNumber: "48", name: "Nikhilbhai", absent: false },
+        { rollNumber: "49", name: "Mahavirsinh", absent: false },
+        { rollNumber: "50", name: "Yash Parmar", absent: false },
+        { rollNumber: "51", name: "Sahil Patel", absent: false },
+        { rollNumber: "52", name: "Rajkumar", absent: false },
+        { rollNumber: "53", name: "Manzilkumar", absent: false },
+        { rollNumber: "54", name: "Foram", absent: false },
+        { rollNumber: "55", name: "Krutarth", absent: false },
+        { rollNumber: "56", name: "Himesh", absent: false },
+        { rollNumber: "57", name: "Meet", absent: false },
+        { rollNumber: "58", name: "Jaimit", absent: false },
+        { rollNumber: "59", name: "Arshav", absent: false },
+        { rollNumber: "60", name: "Prince", absent: false },
+        { rollNumber: "61", name: "Vishal", absent: false },
+        { rollNumber: "62", name: "Jankumar", absent: false },
+        { rollNumber: "63", name: "Himesh", absent: false },
+        { rollNumber: "64", name: "Saumy", absent: false },
+        { rollNumber: "65", name: "Adil", absent: false },
+        { rollNumber: "66", name: "Nilesh", absent: false },
+        { rollNumber: "67", name: "Kundan", absent: false },
+        { rollNumber: "68", name: "Harshaben", absent: false },
+        { rollNumber: "69", name: "Misha", absent: false },
+        { rollNumber: "70", name: "Ketu", absent: false },
+        { rollNumber: "71", name: "Ridhavsinh", absent: false },
+        { rollNumber: "72", name: "Haresh", absent: false },
+        { rollNumber: "73", name: "Sahil Rathod", absent: false },
+        { rollNumber: "74", name: "Manankumar", absent: false },
+        { rollNumber: "75", name: "Om", absent: false },
+        { rollNumber: "76", name: "Usama", absent: false },
+        { rollNumber: "77", name: "Alamdar", absent: false },
+        { rollNumber: "78", name: "Soban", absent: false },
+        { rollNumber: "79", name: "Mohammad", absent: false },
+        { rollNumber: "80", name: "Mohammad Jawad", absent: false },
+        { rollNumber: "81", name: "Muhammad", absent: false },
+        { rollNumber: "82", name: "Raj", absent: false },
+        { rollNumber: "83", name: "Kajalben", absent: false },
+        { rollNumber: "84", name: "Sahad", absent: false },
+        { rollNumber: "85", name: "Anush", absent: false },
+        { rollNumber: "86", name: "Khushi", absent: false },
+        { rollNumber: "87", name: "Diya", absent: false },
+        { rollNumber: "88", name: "Indravadansinh", absent: false },
+        { rollNumber: "89", name: "Khushboo", absent: false },
+        { rollNumber: "90", name: "Saiedali", absent: false },
+        { rollNumber: "91", name: "Janviben", absent: false },
+        { rollNumber: "92", name: "Devalba", absent: false },
+        { rollNumber: "93", name: "Mankumar", absent: false },
+        { rollNumber: "94", name: "Dax", absent: false },
+        { rollNumber: "95", name: "Dhruv Solanki", absent: false },
+        { rollNumber: "96", name: "Kuldip", absent: false },
+        { rollNumber: "97", name: "Khushiben", absent: false },
+        { rollNumber: "98", name: "Jay Joshi", absent: false },
+        { rollNumber: "99", name: "Parthkumar", absent: false },
+        { rollNumber: "100", name: "Mamataben", absent: false },
+        { rollNumber: "101", name: "Roomy Fatema", absent: false },
+        { rollNumber: "102", name: "Kris", absent: false },
+        { rollNumber: "103", name: "Mann", absent: false },
+        { rollNumber: "104", name: "Mahendihasan", absent: false },
+        { rollNumber: "105", name: "Govind Desai", absent: false },
+        { rollNumber: "106", name: "Diyaben Ramola", absent: false },
+        { rollNumber: "107", name: "Mohammad Kef", absent: false },
+        { rollNumber: "108", name: "Ritika", absent: false },
+        { rollNumber: "109", name: "Armanbhai", absent: false },
+        { rollNumber: "110", name: "Hiteshkumar", absent: false },
+        { rollNumber: "111", name: "Yajan", absent: false },
+        { rollNumber: "112", name: "Bhagyshree", absent: false },
+        { rollNumber: "113", name: "Shakilahmad", absent: false },
+        { rollNumber: "114", name: "Moraiyan", absent: false },
+        { rollNumber: "115", name: "Raj Joshi", absent: false },
+        { rollNumber: "116", name: "Druv Chauhan", absent: false },
+        { rollNumber: "117", name: "Hardik", absent: false },
+        { rollNumber: "118", name: "Binal", absent: false },
+        { rollNumber: "119", name: "Krish", absent: false },
+        { rollNumber: "120", name: "Muhammad Baloch", absent: false },
+        { rollNumber: "121", name: "Anirudhdhsinh", absent: false },
+        { rollNumber: "122", name: "Sarah", absent: false },
+        { rollNumber: "123", name: "Sahil Dhanak", absent: false },
+        { rollNumber: "124", name: "Saad Sunasara", absent: false },
+      ];
+
+      let currentCourse = "BSc IT";
+      const courseSelect = document.getElementById("courseSelect");
+
+      const absentStudents = [];
+
+      function handleKeyPress(event) {
+        const rollNumberInput = document.getElementById("rollNumber").value;
+
+        if (event.key === "Enter" && rollNumberInput.trim() !== "") {
+          markAbsent();
+        } else if (event.key === "Backspace") {
+          // Handle Backspace key press
+          if (rollNumberInput === "") {
+            // If the input field is empty, remove the last student from the absent list
+            removeLastStudent();
+          } else {
+            // If the input field is not empty, remove the last character from it
+            document.getElementById("rollNumber").value = rollNumberInput.slice(
+              0,
+              -15
+            );
+          }
+        }
+      }
+
+      function markAbsent() {
+        const rollNumberInput = document.getElementById("rollNumber").value;
+        const resultElement = document.getElementById("absentList");
+
+        let students;
+        if (currentCourse === "BSc IT") {
+          students = bscItStudents;
+        } else if (currentCourse === "BCA") {
+          students = bcaStudents;
+        }
+
+        const student = findStudent(students, rollNumberInput);
+
+        if (student !== null && !student.absent) {
+          student.absent = true;
+          absentStudents.push(student);
+          displayAbsentStudents(absentStudents);
+        } else if (student !== null && student.absent) {
+          alert(`${student.name} is already marked as absent.`);
+        } else {
+          alert("Student not found or the input is empty.");
+        }
+
+        // Clear the input field after marking as absent
+        document.getElementById("rollNumber").value = "";
+      }
+
+      function displayAbsentStudents(absentStudents) {
+        const absentListElement = document.getElementById("absentList");
+        absentListElement.innerHTML = "";
+
+        absentStudents.forEach((student) => {
+          const li = document.createElement("li");
+          li.innerHTML = `${student.rollNumber} ${student.name}`;
+          absentListElement.appendChild(li);
+        });
+      }
+
+      function removeLastStudent() {
+        if (absentStudents.length > 0) {
+          absentStudents.pop();
+          displayAbsentStudents(absentStudents);
+        }
+      }
+
+      function removeStudent(rollNumber) {
+        const studentIndex = absentStudents.findIndex(
+          (student) => student.rollNumber === rollNumber
+        );
+        if (studentIndex !== -1) {
+          absentStudents.splice(studentIndex, 1);
+          displayAbsentStudents(absentStudents);
+        }
+      }
+
+      function findStudent(students, rollNumber) {
+        for (let i = 0; i < students.length; i++) {
+          if (students[i].rollNumber === rollNumber) {
+            return students[i];
+          }
+        }
+        return null; // Return null if the roll number is not found
+      }
+
+      function changeCourse() {
+        currentCourse = courseSelect.value;
+      }
+
+      function copyAbsentStudents() {
+        const absentListElement = document.getElementById("absentList");
+        const absentStudentsList = [];
+
+        absentListElement.childNodes.forEach((li) => {
+          const text = li.textContent.trim();
+          if (text !== "") {
+            absentStudentsList.push(text);
+          }
+        });
+
+        const textToCopy = absentStudentsList.join("\n");
+        copyTextToClipboard(textToCopy);
+        alert("Absent students' names and roll numbers copied to clipboard.");
+      }
+
+      function copyTextToClipboard(text) {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+    </script>
+  </body>
+</html>
